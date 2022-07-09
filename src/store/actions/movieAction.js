@@ -52,13 +52,14 @@ export function getPageMovies(id) {
   }
 }
 
-export function getMovies() {
+export function getMovies(page) {
   return function(dispatch) {
     dispatch(setLoading(true))
-    fetch(`${api}/movie/upcoming?api_key=${apiKey}`)
+    fetch(`${api}/movie/upcoming?api_key=${apiKey}&page=${page}`)
       .then(res => res.json())
       .then(data => {
         dispatch(setMovies(data))
+        dispatch(setMoviePage(page))
       })
       .catch((err) => {
         dispatch(setError(err))

@@ -55,18 +55,31 @@ export default function MovieCard({movie}) {
               py: 0.3,
               my: -0.5,
               mb: 1,
-              width: 27,
+              width: 36,
               display: "flex",
               alignItems: 'center'
             }}
           > 
 
-            <StarRateRoundedIcon sx={{ color: "#ffe385", fontSize: 10 }}/>
-            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, fontSize: 9, ml: 0.3 }}>
-              {movie.vote_average}
-            </Typography>
+            <StarRateRoundedIcon sx={{ color: "#ffe385", fontSize: 14 }}/>
+            {(() => {
+              if(movie.vote_average === 0) {
+                return (
+                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, fontSize: 12, ml: 0.3 }}>
+                    N/A
+                  </Typography>
+                )
+              } else {
+                return (
+                  <Typography variant="body2" color="text.secondary" sx={{ fontWeight: 600, fontSize: 12, ml: 0.3 }}>
+                    {movie.vote_average}
+                  </Typography>
+                )
+              }
+
+            })()}
           </Box>
-          <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 550, fontSize: 10 }}>
+          <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 550, fontSize: 12 }}>
             {movie.title}
           </Typography>
           {/* <Typography variant="body2" color="text.secondary">

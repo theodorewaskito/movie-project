@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from "react-redux";
 import { 
-  getMovies, 
-  getMovie, 
-  getPageMovies
+  getMovies
 } from '../store/actions/movieAction';
 
 import Box from '@mui/material/Box';
@@ -17,30 +15,47 @@ export default function MoviePage() {
   const dispatch = useDispatch()
 
   const movies = useSelector(state => state.movieState.movies)
-  // const loading = useSelector(state => state.movieState.isLoading)
-  // const error = useSelector(state => state.movieState.isError)  
+  const loading = useSelector(state => state.movieState.isLoading)
+  const error = useSelector(state => state.movieState.isError)  
   const page = useSelector(state => state.movieState.moviePage) 
+
+  const handleChange = (event, value) => {
+    // console.log("nilai", value);
+    dispatch(getMovies(value));
+  };
 
   console.log(movies);
 
   useEffect(() => {
-    dispatch(getMovies())
+    dispatch(getMovies(page))
   }, [])
   
   return (
     <Box sx={{ m: 2 }}>
-      <Grid container spacing={2}>
-        {movies?.results?.map((movie, index) => {
+      {(() => {
+        if (loading) {
           return (
-            <Grid item xs={1.5}>
-              <MovieCard
-                key={index} 
-                movie={movie}
-              />
+            <Box>Loading ...</Box>
+          )
+        } else {
+          return (
+            <Grid container spacing={2}>
+              {movies?.results?.map((movie, index) => {
+                return (
+                  <Grid item xs={1.5}>
+                    <MovieCard
+                      key={index} 
+                      movie={movie}
+                    />
+                  </Grid>
+                )
+              })}
             </Grid>
           )
-        })}
-      </Grid>
+        }
+
+      })()}
+
 
       <Box 
         sx={{
@@ -49,7 +64,13 @@ export default function MoviePage() {
         }}
       >
         <Stack spacing={2} sx={{ my: 4 }}>
-          <Pagination count={10} variant="outlined" shape="rounded" />
+          <Pagination 
+            count={movies.total_pages} 
+            variant="outlined" 
+            shape="rounded" 
+            page={page}
+            onChange={handleChange}
+          />
         </Stack>
       </Box>
     </Box>

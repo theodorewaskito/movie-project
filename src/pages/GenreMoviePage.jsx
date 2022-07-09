@@ -9,6 +9,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 
 import MovieCard from '../components/MovieCard';
 
@@ -18,28 +19,54 @@ export default function GenreMoviePage() {
   const dispatch = useDispatch()
 
   const genreMovies = useSelector(state => state.genreState.genreMovies) 
-  // const page = useSelector(state => state.movieState.moviePage) 
+  const genreName = useSelector(state => state.genreState.genreName) 
+  const page = useSelector(state => state.genreState.page) 
+  const loading = useSelector(state => state.movieState.isLoading)
+
 
   console.log(genreMovies);
+  console.log( "NAme", genreName);
+
+  const handleChange = (event, value) => {
+    // console.log("nilai", value);
+    dispatch(getGenreMovies(id, value));
+  };
 
   useEffect(() => {
-    dispatch(getGenreMovies(id))
-  }, [])
+    dispatch(getGenreMovies(id, page))
+  }, [page])
 
   return (
     <Box sx={{ m: 2 }}>
-      <Grid container spacing={2}>
-        {genreMovies?.results?.map((movie, index) => {
+      {(() => {
+        if (loading) {
           return (
-            <Grid item xs={1.5}>
-              <MovieCard
-                key={index} 
-                movie={movie}
-              />
-            </Grid>
+            <Box>Loading ...</Box>
           )
-        })}
-      </Grid>
+        } else {
+          return (
+            <Box
+
+            >
+              <Typography variant="h5" sx={{mb: 3}}>
+                {genreName}
+              </Typography>
+              <Grid container spacing={2}>
+                {genreMovies?.results?.map((movie, index) => {
+                  return (
+                    <Grid item xs={1.5}>
+                      <MovieCard
+                        key={index} 
+                        movie={movie}
+                      />
+                    </Grid>
+                  )
+                })}
+              </Grid>
+            </Box>
+          )
+        }
+      })()}
 
       <Box 
         sx={{
@@ -48,7 +75,13 @@ export default function GenreMoviePage() {
         }}
       >
         <Stack spacing={2} sx={{ my: 4 }}>
-          <Pagination count={10} variant="outlined" shape="rounded" />
+          <Pagination 
+            count={genreMovies.total_pages} 
+            variant="outlined" 
+            shape="rounded" 
+            page={page}
+            onChange={handleChange}
+          />
         </Stack>
       </Box>
     </Box>
